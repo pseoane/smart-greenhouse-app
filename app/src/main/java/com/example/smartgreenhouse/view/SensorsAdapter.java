@@ -1,13 +1,15 @@
-package com.example.smartgreenhouse;
+package com.example.smartgreenhouse.view;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.selection.SelectionTracker;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smartgreenhouse.R;
+import com.example.smartgreenhouse.model.SensorItems;
+import com.example.smartgreenhouse.view.viewholder.MyviewHolder;
 
 import java.util.List;
 

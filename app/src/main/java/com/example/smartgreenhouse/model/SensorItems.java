@@ -1,4 +1,4 @@
-package com.example.smartgreenhouse;
+package com.example.smartgreenhouse.model;
 
 public class SensorItems {
     private String sensorName;

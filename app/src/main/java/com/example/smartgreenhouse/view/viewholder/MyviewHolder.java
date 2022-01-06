@@ -1,19 +1,13 @@
-package com.example.smartgreenhouse;
+package com.example.smartgreenhouse.view.viewholder;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.selection.ItemDetailsLookup;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smartgreenhouse.R;
+import com.example.smartgreenhouse.model.SensorItems;
 
 public class MyviewHolder extends RecyclerView.ViewHolder {
 
@@ -32,7 +26,7 @@ public class MyviewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    void bindValues(SensorItems item) {
+     public void bindValues(SensorItems item) {
         // give values to the elements contained in the item view
         sName.setText(item.getSensorName());
         sValue.setText(item.getCurrentValue());
