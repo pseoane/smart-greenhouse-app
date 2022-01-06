@@ -8,19 +8,16 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartgreenhouse.R;
-import com.example.smartgreenhouse.model.SensorItems;
+import com.example.smartgreenhouse.model.SensorItem;
 import com.example.smartgreenhouse.view.viewholder.MyviewHolder;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class SensorsAdapter extends RecyclerView.Adapter<MyviewHolder> {
+    public ArrayList<SensorItem> items;
+    private Context context;
 
-
-    private List<SensorItems> items;
-    Context context;
-
-
-    public SensorsAdapter(Context ctxt, List<SensorItems> listofitems) {
+    public SensorsAdapter(Context ctxt, ArrayList<SensorItem> listofitems) {
         super();
         context = ctxt;
         items = listofitems;
@@ -38,7 +35,7 @@ public class SensorsAdapter extends RecyclerView.Adapter<MyviewHolder> {
     public void onBindViewHolder(MyviewHolder holder, int position) {
         // this method actually gives values to the elements of the view holder
         // (values corresponding to the item in 'position')
-        final SensorItems item = items.get(position);
+        final SensorItem item = items.get(position);
         holder.bindValues(item);
 
     }

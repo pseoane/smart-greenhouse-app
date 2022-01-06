@@ -7,7 +7,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartgreenhouse.R;
-import com.example.smartgreenhouse.model.SensorItems;
+import com.example.smartgreenhouse.model.SensorItem;
 
 public class MyviewHolder extends RecyclerView.ViewHolder {
 
@@ -26,7 +26,7 @@ public class MyviewHolder extends RecyclerView.ViewHolder {
 
     }
 
-     public void bindValues(SensorItems item) {
+     public void bindValues(SensorItem item) {
         // give values to the elements contained in the item view
         sName.setText(item.getSensorName());
         sValue.setText(item.getCurrentValue());
