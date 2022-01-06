@@ -4,6 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Usuario/Desktop/Carlos/masterIoT/Archietctural/Proyecto/app/smart-greenhouse-app/app/src/main/res/layout/activity_main.xml" value="0.21" />
+        <entry key="..\:/Users/Usuario/Desktop/Carlos/masterIoT/Archietctural/Proyecto/app/smart-greenhouse-app/app/src/main/res/layout/fragment_actuator.xml" value="0.14175724637681159" />
+        <entry key="..\:/Users/Usuario/Desktop/Carlos/masterIoT/Archietctural/Proyecto/app/smart-greenhouse-app/app/src/main/res/layout/fragment_sensor.xml" value="0.14175724637681159" />
+        <entry key="..\:/Users/Usuario/Desktop/Carlos/masterIoT/Archietctural/Proyecto/app/smart-greenhouse-app/app/src/main/res/layout/fragment_statistics.xml" value="0.14175724637681159" />
+        <entry key="..\:/Users/Usuario/Desktop/Carlos/masterIoT/Archietctural/Proyecto/app/smart-greenhouse-app/app/src/main/res/layout/sensor_items.xml" value="0.14175724637681159" />
       </map>
     </option>
   </component>
