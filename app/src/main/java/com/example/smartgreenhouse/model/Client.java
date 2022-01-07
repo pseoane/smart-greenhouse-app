@@ -1,30 +1,16 @@
 package com.example.smartgreenhouse.model;
 
-import android.view.View;
+public class Client {
+    private static Client client;
+    private Client() {}
 
-import com.example.smartgreenhouse.adapters.ApiAdapter;
-import com.example.smartgreenhouse.adapters.MyApiService;
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class Cliente {
-
-    private static Cliente client;
-    private Cliente() {
-    }
-    public static Cliente getSharedInstance() {
+    public static Client getSharedInstance() {
         if (client == null) {
-            client = new Cliente();
-            return client;
+            client = new Client();
         }
-        else return client;
+        return client;
     }
-/*
+
     public void login(View view){
         MyApiService tbs = ApiAdapter.getApiService();
         Call<JsonObject> response = tbs.getToken(new Usuario("Admin","Admin"));
@@ -47,6 +33,7 @@ public class Cliente {
             }
         });
     }
+    /*
     public void requestAssetId(View view){
         MyApiService tbs = ApiAdapter.getApiService();
         Call<JsonObject> response = tbs.getAssetsTen();

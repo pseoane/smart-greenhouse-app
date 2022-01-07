@@ -1,7 +1,6 @@
 package com.example.smartgreenhouse.adapters;
 
-import com.example.smartgreenhouse.model.SensorItem;
-import com.example.smartgreenhouse.model.Usuario;
+import com.example.smartgreenhouse.model.User;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -18,7 +17,7 @@ public interface MyApiService {
     //Get Token
     @Headers({"Accept: application/json","Content-type:application/json"})
     @POST("auth/login")
-    Call<JsonObject> getToken(@Body Usuario user);
+    Call<JsonObject> getToken(@Body User user);
     //get asset
     @Headers({"Content-type:application/json"})
     @GET("tenant/assetInfos?page=0&pageSize=100&type=green_house")
