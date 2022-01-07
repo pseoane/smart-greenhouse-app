@@ -53,10 +53,14 @@ public class SensorFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        refreshSensorsButton = getView().findViewById(R.id.refreshSensorsButton);
+        refreshSensorsButton = view.findViewById(R.id.refreshSensorsButton);
         refreshSensorsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
+<<<<<<< HEAD
         sensorsRecyclerView = getView().findViewById(R.id.sensorsRecylerView);
         sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+=======
+        sensorsRecyclerView = view.findViewById(R.id.sensorsRecylerView);
+>>>>>>> edb1894a3def337923593d4f251276a11433c5c2
         sensorsRecyclerView.setAdapter(sensorsAdapter);
     }
 
