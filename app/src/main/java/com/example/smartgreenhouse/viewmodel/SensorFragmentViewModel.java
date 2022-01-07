@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SensorFragmentViewModel extends AndroidViewModel {
+
     private MutableLiveData<ArrayList<SensorItem>> values;
 
     public SensorFragmentViewModel(@NonNull Application application) {
