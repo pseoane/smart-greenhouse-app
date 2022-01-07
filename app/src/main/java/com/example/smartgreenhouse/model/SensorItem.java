@@ -1,9 +1,9 @@
 package com.example.smartgreenhouse.model;
 
-public class SensorItems {
+public class SensorItem {
     private String sensorName;
     private String currentValue;
-    SensorItems(String sensorName, String currentValue){
+    public SensorItem(String sensorName, String currentValue){
         this.sensorName = sensorName;
         this.currentValue = currentValue;
     }

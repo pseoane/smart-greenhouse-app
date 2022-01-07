@@ -8,37 +8,34 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartgreenhouse.R;
-import com.example.smartgreenhouse.model.SensorItems;
-import com.example.smartgreenhouse.view.viewholder.MyviewHolder;
+import com.example.smartgreenhouse.model.SensorItem;
+import com.example.smartgreenhouse.view.viewholder.MyViewHolder;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class SensorsAdapter extends RecyclerView.Adapter<MyviewHolder> {
+public class SensorsAdapter extends RecyclerView.Adapter<MyViewHolder> {
+    public ArrayList<SensorItem> items;
+    private Context context;
 
-
-    private List<SensorItems> items;
-    Context context;
-
-
-    public SensorsAdapter(Context ctxt, List<SensorItems> listofitems) {
+    public SensorsAdapter(Context ctxt, ArrayList<SensorItem> listofitems) {
         super();
         context = ctxt;
         items = listofitems;
     }
 
     @Override
-    public MyviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // this method has to actually inflate the item view and return the view holder
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sensor_items, parent, false);
-        return new MyviewHolder(context, v);
+        return new MyViewHolder(context, v);
     }
 
 
     @Override
-    public void onBindViewHolder(MyviewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position) {
         // this method actually gives values to the elements of the view holder
         // (values corresponding to the item in 'position')
-        final SensorItems item = items.get(position);
+        final SensorItem item = items.get(position);
         holder.bindValues(item);
 
     }

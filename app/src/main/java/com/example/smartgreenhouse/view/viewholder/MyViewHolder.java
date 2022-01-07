@@ -7,9 +7,9 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartgreenhouse.R;
-import com.example.smartgreenhouse.model.SensorItems;
+import com.example.smartgreenhouse.model.SensorItem;
 
-public class MyviewHolder extends RecyclerView.ViewHolder {
+public class MyViewHolder extends RecyclerView.ViewHolder {
 
     // Holds references to individual item views
     Context context;
@@ -18,7 +18,7 @@ public class MyviewHolder extends RecyclerView.ViewHolder {
 
     private static final String TAG = "ListOfItems, MyViewHolder";
 
-    public MyviewHolder(Context ctxt, View itemView) {
+    public MyViewHolder(Context ctxt, View itemView) {
         super(itemView);
         context = ctxt;
         sName = itemView.findViewById(R.id.sensorName);
@@ -26,7 +26,7 @@ public class MyviewHolder extends RecyclerView.ViewHolder {
 
     }
 
-     public void bindValues(SensorItems item) {
+     public void bindValues(SensorItem item) {
         // give values to the elements contained in the item view
         sName.setText(item.getSensorName());
         sValue.setText(item.getCurrentValue());
