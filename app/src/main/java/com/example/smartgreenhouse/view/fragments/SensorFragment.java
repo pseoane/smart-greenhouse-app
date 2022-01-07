@@ -6,12 +6,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.smartgreenhouse.R;
 import com.example.smartgreenhouse.model.SensorItem;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
  */
 public class SensorFragment extends Fragment {
     private SensorFragmentViewModel viewModel;
-    private Button refreshSensorsButton;
+    private ImageButton refreshSensorsButton;
     private RecyclerView sensorsRecyclerView;
     private SensorsAdapter sensorsAdapter;
 
@@ -54,6 +56,7 @@ public class SensorFragment extends Fragment {
         refreshSensorsButton = getView().findViewById(R.id.refreshSensorsButton);
         refreshSensorsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
         sensorsRecyclerView = getView().findViewById(R.id.sensorsRecylerView);
+        sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         sensorsRecyclerView.setAdapter(sensorsAdapter);
     }
 
