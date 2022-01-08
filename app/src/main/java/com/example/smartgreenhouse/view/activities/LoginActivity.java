@@ -1,4 +1,4 @@
-package com.example.smartgreenhouse.activities;
+package com.example.smartgreenhouse.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.smartgreenhouse.R;
-import com.example.smartgreenhouse.model.User;
+import com.example.smartgreenhouse.model.Usuario;
 import com.example.smartgreenhouse.viewmodel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -32,12 +32,12 @@ public class LoginActivity extends AppCompatActivity {
     public void login(){
         String username = editTextUser.getText().toString();
         String password = editTextPass.getText().toString();
-        viewModel.performLogin(new User(username, password));
+        viewModel.performLogin(new Usuario(username, password));
     }
 
     private void onLoginResult(Boolean loginSucceeded) {
         if (loginSucceeded) {
-            Intent intent = new Intent(this,MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();

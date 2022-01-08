@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.smartgreenhouse.model.Client;
 import com.example.smartgreenhouse.model.SensorItem;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class SensorFragmentViewModel extends AndroidViewModel {
     }
 
     public void refreshValues() {
+        Client
         // Fake values
         ArrayList<SensorItem> mockValues = new ArrayList(Arrays.asList(
                 new SensorItem("temperature", "25ºC"),

@@ -16,7 +16,7 @@ import android.widget.ImageButton;
 
 import com.example.smartgreenhouse.R;
 import com.example.smartgreenhouse.model.SensorItem;
-import com.example.smartgreenhouse.adapters.SensorsAdapter;
+import com.example.smartgreenhouse.view.viewholder.adapters.SensorsAdapter;
 import com.example.smartgreenhouse.viewmodel.SensorFragmentViewModel;
 
 import java.util.ArrayList;

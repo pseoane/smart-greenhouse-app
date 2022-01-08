@@ -1,4 +1,4 @@
-package com.example.smartgreenhouse.adapters;
+package com.example.smartgreenhouse.view.viewholder.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

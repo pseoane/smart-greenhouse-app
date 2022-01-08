@@ -1,4 +1,4 @@
-package com.example.smartgreenhouse.activities;
+package com.example.smartgreenhouse.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
