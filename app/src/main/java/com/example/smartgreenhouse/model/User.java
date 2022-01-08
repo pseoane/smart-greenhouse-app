@@ -1,9 +1,9 @@
 package com.example.smartgreenhouse.model;
 
-public class Usuario {
+public class User {
     public String username;
     public String password;
-    public Usuario(String user, String pass){
+    public User(String user, String pass){
         this.username = user;
         this.password = pass;
     }

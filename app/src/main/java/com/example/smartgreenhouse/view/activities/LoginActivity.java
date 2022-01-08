@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.smartgreenhouse.R;
-import com.example.smartgreenhouse.model.Usuario;
+import com.example.smartgreenhouse.model.User;
 import com.example.smartgreenhouse.viewmodel.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login(){
         String username = editTextUser.getText().toString();
         String password = editTextPass.getText().toString();
-        viewModel.performLogin(new Usuario(username, password));
+        viewModel.performLogin(new User(username, password));
     }
 
     private void onLoginResult(Boolean loginSucceeded) {

@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.smartgreenhouse.model.Auth;
 import com.example.smartgreenhouse.model.Client;
-import com.example.smartgreenhouse.model.Usuario;
+import com.example.smartgreenhouse.model.User;
 import com.google.gson.Gson;
 
 public class LoginViewModel extends AndroidViewModel {
@@ -25,7 +25,7 @@ public class LoginViewModel extends AndroidViewModel {
         return loginResult;
     }
 
-    public void performLogin(Usuario user) {
+    public void performLogin(User user) {
         Client.getSharedInstance().login(
                 user,
                 response -> {

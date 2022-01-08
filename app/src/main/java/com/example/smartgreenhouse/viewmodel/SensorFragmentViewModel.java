@@ -28,7 +28,6 @@ public class SensorFragmentViewModel extends AndroidViewModel {
     }
 
     public void refreshValues() {
-        Client
         // Fake values
         ArrayList<SensorItem> mockValues = new ArrayList(Arrays.asList(
                 new SensorItem("temperature", "25ºC"),

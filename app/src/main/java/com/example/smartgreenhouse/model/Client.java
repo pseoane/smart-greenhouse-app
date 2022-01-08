@@ -50,7 +50,7 @@ public class Client {
 
     // Action methods
     public void login(
-            Usuario user,
+            User user,
             Response.Listener<org.json.JSONObject> successListener,
             Response.ErrorListener errorListener
     ) {
