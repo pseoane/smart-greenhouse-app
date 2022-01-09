@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Client {
@@ -24,6 +25,7 @@ public class Client {
     private RequestQueue queue;
     private String authToken;
     private Gson gson;
+    private User userDetails;
 
     private Client() {
         gson = new Gson();
@@ -54,6 +56,7 @@ public class Client {
             Response.Listener<org.json.JSONObject> successListener,
             Response.ErrorListener errorListener
     ) {
+        userDetails =  user;
         String url = baseUrl + "/auth/login";
         post(url, gson.toJson(user), successListener, errorListener);
     }
@@ -65,9 +68,11 @@ public class Client {
     ) {
         String queryParams = "?keys=";
         for (String key : keys) {
-            queryParams += ("," + key);
+            queryParams += (key + ",");
         }
-        String url = baseUrl + "plugins/telemetry/device/" + DEVICE_ID + "values/timeseries" + queryParams;
+        queryParams = queryParams.substring(0, queryParams.length() - 1); //To remove last parameter
+
+        String url = baseUrl + "/plugins/telemetry/DEVICE/" + DEVICE_ID + "/values/timeseries" + queryParams;
         get(url, successListener, errorListener);
     }
 
@@ -86,6 +91,9 @@ public class Client {
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+                //Map<String, String> headers = new HashMap<String, String>();
+                //headers.put("username", userDetails.getUserName());
+                //headers.put("password", userDetails.getUserPassword());
                 Map<String, String> headers = super.getHeaders();
                 headers.put("X-Authorization", authToken);
                 return headers;
