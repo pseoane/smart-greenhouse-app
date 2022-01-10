@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,17 +17,21 @@ import java.util.ArrayList;
 public class SensorsAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public ArrayList<SensorItem> items;
     private Context context;
+    public int[] images;
 
-    public SensorsAdapter(Context ctxt, ArrayList<SensorItem> listofitems) {
+    public SensorsAdapter(Context ctxt, ArrayList<SensorItem> listofitems, int[] listofimages) {
         super();
         context = ctxt;
         items = listofitems;
+        images = listofimages;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // this method has to actually inflate the item view and return the view holder
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sensor_items, parent, false);
+        int height = parent.getMeasuredHeight() / 4;
+        v.setMinimumHeight(height);
         return new MyViewHolder(context, v);
     }
 
@@ -36,7 +41,7 @@ public class SensorsAdapter extends RecyclerView.Adapter<MyViewHolder> {
         // this method actually gives values to the elements of the view holder
         // (values corresponding to the item in 'position')
         final SensorItem item = items.get(position);
-        holder.bindValues(item);
+        holder.bindValues(item, images[position]);
 
     }
 

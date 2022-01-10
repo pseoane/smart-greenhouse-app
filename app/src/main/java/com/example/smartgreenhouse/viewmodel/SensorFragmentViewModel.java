@@ -1,6 +1,7 @@
 package com.example.smartgreenhouse.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,16 +42,6 @@ public class SensorFragmentViewModel extends AndroidViewModel {
         return values;
     }
 
-    /*public void refreshValues() {
-        // Fake values
-        ArrayList<SensorItem> mockValues = new ArrayList(Arrays.asList(
-                new SensorItem("temperature", "25ºC"),
-                new SensorItem("light", "70%"),
-                new SensorItem("soilMoisture", "58%")
-        ));
-        values.postValue(mockValues);
-    }*/
-
     public void refreshValues(){
         ArrayList<String> keys = new ArrayList(Arrays.asList(
                 "currentValueHum",
@@ -62,35 +53,53 @@ public class SensorFragmentViewModel extends AndroidViewModel {
         Client.getSharedInstance().getSensorsValues(
                 keys,
                 response -> {
-                    ArrayList<SensorItem> messageError = new ArrayList<>();
-                    String messageName = "errorMessage";
-                    String messageValue = response.toString();
-                    messageError.add(new SensorItem(messageName, messageValue));
-                    values.postValue(messageError);
-
-                    /*try {
+                    try {
                         ArrayList<SensorItem> sensors = new ArrayList<>();
-                        JSONArray jsonArray = response.getJSONArray("currentValueHum");
-                        int size = jsonArray.length();
-                        String sensorName = "Humidity";
-                        for(int i=0; i<size; i++ ){
-                            JSONObject jsonObject = new JSONObject(response.get(String.valueOf(i)).toString());
-                            String sensorValue = jsonObject.getString("value");
-                            sensors.add(new SensorItem(sensorName, sensorValue));
-                            values.postValue(sensors);
+                        ArrayList<String> sensorsName = new ArrayList(Arrays.asList( "Humidity", "Light", "pH", "Soil Moisture", "Temperature"));
+                        JSONArray humParameter = response.getJSONArray("currentValueHum");
+                        for(int i=0; i<humParameter.length(); i++ ){
+                            JSONObject jsonObject = humParameter.getJSONObject(i);
+                            String sensorValue = jsonObject.getString("value") + " %";
+                            sensors.add(new SensorItem(sensorsName.get(0), sensorValue));
                         }
+                        JSONArray lightParameter = response.getJSONArray("currentValueL");
+                        for(int i=0; i<lightParameter.length(); i++ ){
+                            JSONObject jsonObject = lightParameter.getJSONObject(i);
+                            String sensorValue = jsonObject.getString("value") + " %";
+                            sensors.add(new SensorItem(sensorsName.get(1), sensorValue));
 
+                        }
+                        JSONArray pHParameter = response.getJSONArray("currentValuepH");
+                        for(int i=0; i<pHParameter.length(); i++ ){
+                            JSONObject jsonObject = pHParameter.getJSONObject(i);
+                            String sensorValue = jsonObject.getString("value");
+                            sensors.add(new SensorItem(sensorsName.get(2), sensorValue));
+
+                        }
+                        JSONArray smParameter = response.getJSONArray("currentValueSM");
+                        for(int i=0; i<smParameter.length(); i++ ){
+                            JSONObject jsonObject = smParameter.getJSONObject(i);
+                            String sensorValue = jsonObject.getString("value") + " %";
+                            sensors.add(new SensorItem(sensorsName.get(3), sensorValue));
+
+                        }
+                        JSONArray tempParameter = response.getJSONArray("currentValueTemp");
+                        for(int i=0; i<tempParameter.length(); i++ ){
+                            JSONObject jsonObject = tempParameter.getJSONObject(i);
+                            String sensorValue = jsonObject.getString("value") + " ºC";
+                            sensors.add(new SensorItem(sensorsName.get(4), sensorValue));
+
+                        }
+                        values.postValue(sensors);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }*/
+                    }
                 },
                 error -> {
-                    ArrayList<SensorItem> mockValues = new ArrayList(Arrays.asList(
-                            new SensorItem("temperature", "25ºC"),
-                            new SensorItem("light", "70%"),
-                            new SensorItem("soilMoisture", "58%")
+                    ArrayList<SensorItem> errorSituation = new ArrayList(Arrays.asList(
+                            new SensorItem("WARNING", "It was not possible to access the values")
                     ));
-                    values.postValue(mockValues);
+                    values.postValue(errorSituation);
                 }
         );
     }

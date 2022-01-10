@@ -2,6 +2,8 @@ package com.example.smartgreenhouse.model;
 
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,7 +27,6 @@ public class Client {
     private RequestQueue queue;
     private String authToken;
     private Gson gson;
-    private User userDetails;
 
     private Client() {
         gson = new Gson();
@@ -48,6 +49,7 @@ public class Client {
 
     public void setAuthToken(Auth auth) {
         authToken = auth.token;
+        Log.d("Auth", authToken);
     }
 
     // Action methods
@@ -56,7 +58,6 @@ public class Client {
             Response.Listener<org.json.JSONObject> successListener,
             Response.ErrorListener errorListener
     ) {
-        userDetails =  user;
         String url = baseUrl + "/auth/login";
         post(url, gson.toJson(user), successListener, errorListener);
     }
@@ -73,6 +74,7 @@ public class Client {
         queryParams = queryParams.substring(0, queryParams.length() - 1); //To remove last parameter
 
         String url = baseUrl + "/plugins/telemetry/DEVICE/" + DEVICE_ID + "/values/timeseries" + queryParams;
+        Log.d("URL", url);
         get(url, successListener, errorListener);
     }
 
@@ -91,11 +93,10 @@ public class Client {
         ) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                //Map<String, String> headers = new HashMap<String, String>();
-                //headers.put("username", userDetails.getUserName());
-                //headers.put("password", userDetails.getUserPassword());
-                Map<String, String> headers = super.getHeaders();
-                headers.put("X-Authorization", authToken);
+                Map<String, String> headers = new HashMap<String, String>();
+                String authorization = "Bearer " + authToken; //According the documentation, Bearer is needed
+                Log.d("authorization", authorization);
+                headers.put("X-Authorization", authorization);
                 return headers;
             }
         };

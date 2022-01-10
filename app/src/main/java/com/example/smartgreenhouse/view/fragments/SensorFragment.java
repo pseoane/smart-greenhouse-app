@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,7 +38,8 @@ public class SensorFragment extends Fragment {
     private ImageButton refreshSensorsButton;
     private RecyclerView sensorsRecyclerView;
     private SensorsAdapter sensorsAdapter;
-    private final String URL = "https://srv-iot.diatel.upm.es/api/plugins/telemetry/ASSET/9ae70ea0-6bb1-11ec-9a04-591db17ccd5b/values/timeseries?keys=currentValueHum,currentValueL,currentValuepH,currentValueSM,currentValueTemp";
+
+    int[] sensorsIcons = {R.drawable.humidity, R.drawable.light, R.drawable.ph, R.drawable.soil, R.drawable.temperature};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class SensorFragment extends Fragment {
 
         // Inflate the layout for this fragment
         viewModel = new ViewModelProvider(this).get(SensorFragmentViewModel.class);
-        sensorsAdapter = new SensorsAdapter(getActivity(), new ArrayList<>());
+        sensorsAdapter = new SensorsAdapter(getActivity(), new ArrayList<>(), sensorsIcons);
         viewModel.getValues().observe(getActivity(), newList -> onValuesChanged(newList));
         return inflater.inflate(R.layout.fragment_sensor, container, false);
     }
@@ -65,7 +67,7 @@ public class SensorFragment extends Fragment {
         refreshSensorsButton = view.findViewById(R.id.refreshSensorsButton);
         refreshSensorsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
         sensorsRecyclerView = getView().findViewById(R.id.sensorsRecylerView);
-        sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        sensorsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         sensorsRecyclerView = view.findViewById(R.id.sensorsRecylerView);
         sensorsRecyclerView.setAdapter(sensorsAdapter);
     }
