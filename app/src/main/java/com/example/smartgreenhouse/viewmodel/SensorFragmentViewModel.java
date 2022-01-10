@@ -1,24 +1,13 @@
 package com.example.smartgreenhouse.viewmodel;
 
 import android.app.Application;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.smartgreenhouse.model.Auth;
 import com.example.smartgreenhouse.model.Client;
 import com.example.smartgreenhouse.model.SensorItem;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;

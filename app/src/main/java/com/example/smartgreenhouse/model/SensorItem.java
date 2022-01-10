@@ -9,5 +9,4 @@ public class SensorItem {
     }
     public String getSensorName(){return sensorName;}
     public String getCurrentValue(){return currentValue;}
-
 }
