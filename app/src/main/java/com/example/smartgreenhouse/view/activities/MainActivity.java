@@ -1,4 +1,4 @@
-package com.example.smartgreenhouse.view;
+package com.example.smartgreenhouse.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -6,6 +6,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 
 import com.example.smartgreenhouse.R;
+import com.example.smartgreenhouse.view.PagerController;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     ViewPager2 viewPager;
     TabItem tabItemSen,tabItemAct,tabItemSta;
     PagerController pagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,5 +56,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+
     }
+
 }

@@ -6,19 +6,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.smartgreenhouse.R;
 import com.example.smartgreenhouse.model.SensorItem;
-import com.example.smartgreenhouse.view.SensorsAdapter;
+import com.example.smartgreenhouse.view.viewholder.adapters.SensorsAdapter;
 import com.example.smartgreenhouse.viewmodel.SensorFragmentViewModel;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -31,6 +39,8 @@ public class SensorFragment extends Fragment {
     private RecyclerView sensorsRecyclerView;
     private SensorsAdapter sensorsAdapter;
 
+    int[] sensorsIcons = {R.drawable.humidity, R.drawable.light, R.drawable.ph, R.drawable.soil, R.drawable.temperature};
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +49,10 @@ public class SensorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         viewModel = new ViewModelProvider(this).get(SensorFragmentViewModel.class);
-        sensorsAdapter = new SensorsAdapter(getActivity(), new ArrayList<>());
+        sensorsAdapter = new SensorsAdapter(getActivity(), new ArrayList<>(), sensorsIcons);
         viewModel.getValues().observe(getActivity(), newList -> onValuesChanged(newList));
         return inflater.inflate(R.layout.fragment_sensor, container, false);
     }
@@ -55,12 +66,9 @@ public class SensorFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         refreshSensorsButton = view.findViewById(R.id.refreshSensorsButton);
         refreshSensorsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
-<<<<<<< HEAD
         sensorsRecyclerView = getView().findViewById(R.id.sensorsRecylerView);
-        sensorsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-=======
+        sensorsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         sensorsRecyclerView = view.findViewById(R.id.sensorsRecylerView);
->>>>>>> edb1894a3def337923593d4f251276a11433c5c2
         sensorsRecyclerView.setAdapter(sensorsAdapter);
     }
 
@@ -69,7 +77,7 @@ public class SensorFragment extends Fragment {
         sensorsAdapter.notifyDataSetChanged();
     }
 
-    private void onRefreshButtonClicked() {
-        viewModel.refreshValues();
-    }
+    private void onRefreshButtonClicked() { viewModel.refreshValues(); }
+
+
 }
