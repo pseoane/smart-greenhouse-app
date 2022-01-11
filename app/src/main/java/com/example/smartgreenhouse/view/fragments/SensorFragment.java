@@ -1,5 +1,6 @@
 package com.example.smartgreenhouse.view.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -38,6 +40,8 @@ public class SensorFragment extends Fragment {
     private ImageButton refreshSensorsButton;
     private RecyclerView sensorsRecyclerView;
     private SensorsAdapter sensorsAdapter;
+
+    private LinearLayout backgroundAlarm;
 
     int[] sensorsIcons = {R.drawable.humidity, R.drawable.light, R.drawable.ph, R.drawable.soil, R.drawable.temperature};
 
@@ -64,6 +68,7 @@ public class SensorFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        backgroundAlarm = view.findViewById(R.id.LinearLayoutSensor);
         refreshSensorsButton = view.findViewById(R.id.refreshSensorsButton);
         refreshSensorsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
         sensorsRecyclerView = getView().findViewById(R.id.sensorsRecylerView);
@@ -73,11 +78,36 @@ public class SensorFragment extends Fragment {
     }
 
     private void onValuesChanged(ArrayList<SensorItem> newList) {
+        viewModel.getAlarms();
         sensorsAdapter.items = newList;
         sensorsAdapter.notifyDataSetChanged();
+        viewModel.getAlarmsStatus();
     }
 
-    private void onRefreshButtonClicked() { viewModel.refreshValues(); }
+    private void onRefreshButtonClicked() {
+        viewModel.getAlarms();
+        viewModel.refreshValues();
+        viewModel.getAlarmsStatus();
+    }
 
+    public void setAlarmBackground(){
+        for(int i=0; i<viewModel.getAlarms().getValue().size(); i++){
+            if(viewModel.getAlarms().getValue().get(i).contains("pH")){
+                backgroundAlarm.setBackgroundColor(Color.parseColor("@colors/alarmON"));
+            }
+            else if(viewModel.getAlarms().getValue().get(i).contains("temperature")){
+
+            }
+            else if(viewModel.getAlarms().getValue().get(i).contains("humidity")){
+
+            }
+            else if(viewModel.getAlarms().getValue().get(i).contains("soil")){
+
+            }
+            else if(viewModel.getAlarms().getValue().get(i).contains("light")){
+
+            }
+        }
+    }
 
 }

@@ -78,6 +78,15 @@ public class Client {
         get(url, successListener, errorListener);
     }
 
+    public void getAlarms(
+            Response.Listener<org.json.JSONObject> successListener,
+            Response.ErrorListener errorListener
+    ){
+        String url = baseUrl + "/alarm/DEVICE/" + DEVICE_ID + "?searchStatus=ACTIVE&pageSize=10&page=0";
+        Log.d("URL", url);
+        get(url, successListener, errorListener);
+    }
+
     // Private methods
     private void get(
             String url,

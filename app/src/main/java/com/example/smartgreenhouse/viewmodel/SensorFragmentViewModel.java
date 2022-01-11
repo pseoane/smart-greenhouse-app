@@ -1,6 +1,7 @@
 package com.example.smartgreenhouse.viewmodel;
 
 import android.app.Application;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 public class SensorFragmentViewModel extends AndroidViewModel {
 
     private MutableLiveData<ArrayList<SensorItem>> values;
+    private MutableLiveData<ArrayList<String>> alarmsValues;
 
     public SensorFragmentViewModel(@NonNull Application application) {
         super(application);
@@ -29,6 +31,13 @@ public class SensorFragmentViewModel extends AndroidViewModel {
             values = new MutableLiveData<>();
         }
         return values;
+    }
+
+    public MutableLiveData<ArrayList<String>> getAlarms() {
+        if (alarmsValues == null) {
+            alarmsValues = new MutableLiveData<>();
+        }
+        return alarmsValues;
     }
 
     public void refreshValues(){
@@ -50,6 +59,7 @@ public class SensorFragmentViewModel extends AndroidViewModel {
                             JSONObject jsonObject = humParameter.getJSONObject(i);
                             String sensorValue = jsonObject.getString("value") + " %";
                             sensors.add(new SensorItem(sensorsName.get(0), sensorValue));
+
                         }
                         JSONArray lightParameter = response.getJSONArray("currentValueL");
                         for(int i=0; i<lightParameter.length(); i++ ){
@@ -92,5 +102,32 @@ public class SensorFragmentViewModel extends AndroidViewModel {
                 }
         );
     }
+
+    public void getAlarmsStatus(){
+        Client.getSharedInstance().getAlarms(
+            response -> {
+                try {
+                    ArrayList<String> alarmsReceived = new ArrayList<String>();
+                    JSONArray data = response.getJSONArray("data");
+                    for(int i=0; i<data.length(); i++ ){
+                        JSONObject jsonObject = data.getJSONObject(i);
+                        String alarm = jsonObject.getString("type");
+                        alarmsReceived.add(alarm);
+                    }
+
+                    alarmsValues.postValue(alarmsReceived);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            },
+            error -> {
+                ArrayList<String> alarmsReceived = new ArrayList<String>();
+                alarmsReceived.add("OK");
+                alarmsValues.postValue(alarmsReceived);
+            }
+        );
+    }
+
+
 
 }
