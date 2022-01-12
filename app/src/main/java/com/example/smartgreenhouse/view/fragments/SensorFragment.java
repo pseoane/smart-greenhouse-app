@@ -41,8 +41,6 @@ public class SensorFragment extends Fragment {
     private RecyclerView sensorsRecyclerView;
     private SensorsAdapter sensorsAdapter;
 
-    private LinearLayout backgroundAlarm;
-
     int[] sensorsIcons = {R.drawable.humidity, R.drawable.light, R.drawable.ph, R.drawable.soil, R.drawable.temperature};
 
     @Override
@@ -58,6 +56,7 @@ public class SensorFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(SensorFragmentViewModel.class);
         sensorsAdapter = new SensorsAdapter(getActivity(), new ArrayList<>(), sensorsIcons);
         viewModel.getValues().observe(getActivity(), newList -> onValuesChanged(newList));
+        viewModel.getAlarms();
         return inflater.inflate(R.layout.fragment_sensor, container, false);
     }
 
@@ -68,7 +67,6 @@ public class SensorFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        backgroundAlarm = view.findViewById(R.id.LinearLayoutSensor);
         refreshSensorsButton = view.findViewById(R.id.refreshSensorsButton);
         refreshSensorsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
         sensorsRecyclerView = getView().findViewById(R.id.sensorsRecylerView);
@@ -78,36 +76,14 @@ public class SensorFragment extends Fragment {
     }
 
     private void onValuesChanged(ArrayList<SensorItem> newList) {
-        viewModel.getAlarms();
+        viewModel.getAlarmsStatus();
         sensorsAdapter.items = newList;
         sensorsAdapter.notifyDataSetChanged();
-        viewModel.getAlarmsStatus();
     }
 
     private void onRefreshButtonClicked() {
-        viewModel.getAlarms();
+        viewModel.getAlarmsStatus(); //this method is called before sensors values are received to compare the alarms with each sensor
         viewModel.refreshValues();
-        viewModel.getAlarmsStatus();
-    }
-
-    public void setAlarmBackground(){
-        for(int i=0; i<viewModel.getAlarms().getValue().size(); i++){
-            if(viewModel.getAlarms().getValue().get(i).contains("pH")){
-                backgroundAlarm.setBackgroundColor(Color.parseColor("@colors/alarmON"));
-            }
-            else if(viewModel.getAlarms().getValue().get(i).contains("temperature")){
-
-            }
-            else if(viewModel.getAlarms().getValue().get(i).contains("humidity")){
-
-            }
-            else if(viewModel.getAlarms().getValue().get(i).contains("soil")){
-
-            }
-            else if(viewModel.getAlarms().getValue().get(i).contains("light")){
-
-            }
-        }
     }
 
 }

@@ -15,7 +15,8 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp">
 
-    <LinearLayout
+    <GridLayout
+        android:id="@+id/layoutSensor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -27,7 +28,6 @@
             android:layout_margin="5dp"/>
 
         <LinearLayout
-            android:id="@+id/LinearLayoutSensor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -50,6 +50,6 @@
                 android:text="CurrentValue"
                 android:textSize="20sp" />
         </LinearLayout>
-    </LinearLayout>
+    </GridLayout>
 
 </androidx.cardview.widget.CardView>
