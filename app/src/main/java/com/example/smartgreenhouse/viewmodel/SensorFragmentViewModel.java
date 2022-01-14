@@ -2,6 +2,7 @@ package com.example.smartgreenhouse.viewmodel;
 
 import android.app.Application;
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -78,6 +79,7 @@ public class SensorFragmentViewModel extends AndroidViewModel {
                 response -> {
                     try {
                         ArrayList<String> alarmsStored = getAlarms().getValue(); //to get the stored alarms
+                        Log.d("alarmsStored: ", alarmsStored.toString());
                         ArrayList<SensorItem> sensors = new ArrayList<>();
                         ArrayList<String> sensorsName = new ArrayList(Arrays.asList( "Humidity", "Light", "pH", "Soil Moisture", "Temperature"));
                         JSONArray humParameter = response.getJSONArray("currentValueHum");

@@ -30,8 +30,8 @@ public class SensorsAdapter extends RecyclerView.Adapter<MyViewHolder> {
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // this method has to actually inflate the item view and return the view holder
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sensor_items, parent, false);
-        int height = parent.getMeasuredHeight() / 4;
-        v.setMinimumHeight(height);
+        //int height = parent.getMeasuredHeight() / 4;
+        //v.setMinimumHeight(height);
         return new MyViewHolder(context, v);
     }
 
