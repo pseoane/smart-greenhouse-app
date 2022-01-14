@@ -15,14 +15,13 @@
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp">
 
-    <GridLayout
-        android:id="@+id/layoutSensor"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/sensorIcon"
+            android:id="@+id/actuatorIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="5dp"/>
@@ -34,22 +33,22 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/sensorName"
+                android:id="@+id/actuatorName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="SensorName"
+                android:text="ActuatorName"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/currentValue"
+                android:id="@+id/currentStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="CurrentValue"
+                android:text="CurrentStatus"
                 android:textSize="20sp" />
         </LinearLayout>
-    </GridLayout>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
