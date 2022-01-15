@@ -10,7 +10,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -86,14 +88,14 @@ public class Client {
     }
 
     public void getLightStatus(
-            Response.Listener<org.json.JSONObject> successListener,
+            Response.Listener<org.json.JSONArray> successListener,
             Response.ErrorListener errorListener
     ){
         getActuatorsValues(DEVICE_ID_LIGHT, successListener, errorListener);
     }
 
     public void getIrrigationStatus(
-            Response.Listener<org.json.JSONObject> successListener,
+            Response.Listener<org.json.JSONArray> successListener,
             Response.ErrorListener errorListener
     ){
         getActuatorsValues(DEVICE_ID_IRRIGATION, successListener, errorListener);
@@ -106,6 +108,30 @@ public class Client {
         String url = baseUrl + "/alarm/DEVICE/" + DEVICE_ID + "?searchStatus=ACTIVE&pageSize=10&page=0";
         Log.d("URL", url);
         get(url, successListener, errorListener);
+    }
+
+    private void getArray(
+            String url,
+            Response.Listener<org.json.JSONArray> listener,
+            Response.ErrorListener errorListener
+    ) {
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                listener,
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                String authorization = "Bearer " + authToken; //According the documentation, Bearer is needed
+                Log.d("authorization", authorization);
+                headers.put("X-Authorization", authorization);
+                return headers;
+            }
+        };
+        queue.add(request); // Sends the request
     }
 
     // Private methods
@@ -157,7 +183,7 @@ public class Client {
 
     private void getActuatorsValues(
             String ID,
-            Response.Listener<org.json.JSONObject> successListener,
+            Response.Listener<org.json.JSONArray> successListener,
             Response.ErrorListener errorListener
     ){
         String url = baseUrl
@@ -165,6 +191,6 @@ public class Client {
                 + ID
                 + "/values/attributes/CLIENT_SCOPE";
         Log.d("URL", url);
-        get(url, successListener, errorListener);
+        getArray(url, successListener, errorListener);
     }
 }

@@ -12,13 +12,18 @@ import com.example.smartgreenhouse.model.ActuatorItem;
 import com.example.smartgreenhouse.view.viewholder.MyViewHolderAct;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ActuatorsAdapter extends RecyclerView.Adapter<MyViewHolderAct> {
     public ArrayList<ActuatorItem> items;
     private Context context;
-    public int[] images;
+    public HashMap<String, Integer> images;
 
-    public ActuatorsAdapter(Context ctxt, ArrayList<ActuatorItem> listofitems, int[] listofimages) {
+    public ActuatorsAdapter(
+            Context ctxt,
+            ArrayList<ActuatorItem> listofitems,
+            HashMap<String, Integer> listofimages
+    ) {
         super();
         context = ctxt;
         items = listofitems;
@@ -39,7 +44,7 @@ public class ActuatorsAdapter extends RecyclerView.Adapter<MyViewHolderAct> {
         // this method actually gives values to the elements of the view holder
         // (values corresponding to the item in 'position')
         final ActuatorItem item = items.get(position);
-        holder.bindValues(item, images[position]);
+        holder.bindValues(item, images.get(item.getActuatorName().toUpperCase()));
 
     }
 
