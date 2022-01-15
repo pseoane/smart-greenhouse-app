@@ -9,13 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.smartgreenhouse.model.ActuatorItem;
 import com.example.smartgreenhouse.model.Attribute;
-import com.example.smartgreenhouse.model.Auth;
 import com.example.smartgreenhouse.model.Client;
-import com.example.smartgreenhouse.model.SensorItem;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ActuatorFragmentViewModel extends AndroidViewModel {
     private MutableLiveData<ArrayList<ActuatorItem>> statusValues;
