@@ -23,7 +23,10 @@ import java.util.Map;
 public class Client {
     private static Client client;
     private final String baseUrl = "https://srv-iot.diatel.upm.es/api";
-    private final String DEVICE_ID = "9ae70ea0-6bb1-11ec-9a04-591db17ccd5b"; // Telemetry Sensors Device
+    //private final String DEVICE_ID = "9ae70ea0-6bb1-11ec-9a04-591db17ccd5b"; // Telemetry Sensors Device
+    private final String DEVICE_ID = "0344eb30-75ed-11ec-9a04-591db17ccd5b"; // Telemetry Sensors Device
+    private final String DEVICE_ID_LIGHT = "b8e95bc0-7303-11ec-9a04-591db17ccd5b";
+    private final String DEVICE_ID_IRRIGATION = "272bb6b0-7498-11ec-9a04-591db17ccd5b";
     private RequestQueue queue;
     private String authToken;
     private Gson gson;
@@ -73,9 +76,27 @@ public class Client {
         }
         queryParams = queryParams.substring(0, queryParams.length() - 1); //To remove last parameter
 
-        String url = baseUrl + "/plugins/telemetry/DEVICE/" + DEVICE_ID + "/values/timeseries" + queryParams;
+        String url = baseUrl
+                + "/plugins/telemetry/DEVICE/"
+                + DEVICE_ID
+                + "/values/timeseries"
+                + queryParams;
         Log.d("URL", url);
         get(url, successListener, errorListener);
+    }
+
+    public void getLightStatus(
+            Response.Listener<org.json.JSONObject> successListener,
+            Response.ErrorListener errorListener
+    ){
+        getActuatorsValues(DEVICE_ID_LIGHT, successListener, errorListener);
+    }
+
+    public void getIrrigationStatus(
+            Response.Listener<org.json.JSONObject> successListener,
+            Response.ErrorListener errorListener
+    ){
+        getActuatorsValues(DEVICE_ID_IRRIGATION, successListener, errorListener);
     }
 
     public void getAlarms(
@@ -132,5 +153,18 @@ public class Client {
             VolleyError error = new VolleyError("Unable to parse body into json");
             errorListener.onErrorResponse(error);
         }
+    }
+
+    private void getActuatorsValues(
+            String ID,
+            Response.Listener<org.json.JSONObject> successListener,
+            Response.ErrorListener errorListener
+    ){
+        String url = baseUrl
+                + "/plugins/telemetry/DEVICE/"
+                + ID
+                + "/values/attributes/CLIENT_SCOPE";
+        Log.d("URL", url);
+        get(url, successListener, errorListener);
     }
 }
