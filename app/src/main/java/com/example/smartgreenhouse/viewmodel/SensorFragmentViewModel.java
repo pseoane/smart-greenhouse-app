@@ -48,7 +48,7 @@ public class SensorFragmentViewModel extends AndroidViewModel {
         return values;
     }
 
-    public void getAlarmsStatus(ArrayList<SensorItem> sensors){
+    private void getAlarmsStatus(ArrayList<SensorItem> sensors){
         Client.getSharedInstance().getAlarms(
                 response -> {
                     try {
