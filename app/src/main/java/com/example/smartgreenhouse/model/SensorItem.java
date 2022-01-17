@@ -12,7 +12,20 @@ public class SensorItem {
         this.currentValue = currentValue;
         this.alarmStatus = alarmStatus;
     }
-    public String getSensorName(){return sensorName;}
-    public String getCurrentValue(){return currentValue;}
-    public String getCurrentBackground(){ return alarmStatus;}
+
+    public String getSensorName() {
+        return sensorName;
+    }
+
+    public String getCurrentValue() {
+        return currentValue;
+    }
+
+    public String getCurrentBackground(){
+        return alarmStatus;
+    }
+
+    public void setAlarmStatus(String newStatus) {
+        alarmStatus = newStatus;
+    }
 }

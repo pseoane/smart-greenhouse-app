@@ -10,7 +10,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -23,7 +25,10 @@ import java.util.Map;
 public class Client {
     private static Client client;
     private final String baseUrl = "https://srv-iot.diatel.upm.es/api";
-    private final String DEVICE_ID = "9ae70ea0-6bb1-11ec-9a04-591db17ccd5b"; // Telemetry Sensors Device
+    //private final String DEVICE_ID = "9ae70ea0-6bb1-11ec-9a04-591db17ccd5b"; // Telemetry Sensors Device
+    private final String DEVICE_ID = "0344eb30-75ed-11ec-9a04-591db17ccd5b"; // Telemetry Sensors Device
+    private final String DEVICE_ID_LIGHT = "b8e95bc0-7303-11ec-9a04-591db17ccd5b";
+    private final String DEVICE_ID_IRRIGATION = "272bb6b0-7498-11ec-9a04-591db17ccd5b";
     private RequestQueue queue;
     private String authToken;
     private Gson gson;
@@ -73,9 +78,27 @@ public class Client {
         }
         queryParams = queryParams.substring(0, queryParams.length() - 1); //To remove last parameter
 
-        String url = baseUrl + "/plugins/telemetry/DEVICE/" + DEVICE_ID + "/values/timeseries" + queryParams;
+        String url = baseUrl
+                + "/plugins/telemetry/DEVICE/"
+                + DEVICE_ID
+                + "/values/timeseries"
+                + queryParams;
         Log.d("URL", url);
         get(url, successListener, errorListener);
+    }
+
+    public void getLightStatus(
+            Response.Listener<org.json.JSONArray> successListener,
+            Response.ErrorListener errorListener
+    ){
+        getActuatorsValues(DEVICE_ID_LIGHT, successListener, errorListener);
+    }
+
+    public void getIrrigationStatus(
+            Response.Listener<org.json.JSONArray> successListener,
+            Response.ErrorListener errorListener
+    ){
+        getActuatorsValues(DEVICE_ID_IRRIGATION, successListener, errorListener);
     }
 
     public void getAlarms(
@@ -85,6 +108,30 @@ public class Client {
         String url = baseUrl + "/alarm/DEVICE/" + DEVICE_ID + "?searchStatus=ACTIVE&pageSize=10&page=0";
         Log.d("URL", url);
         get(url, successListener, errorListener);
+    }
+
+    private void getArray(
+            String url,
+            Response.Listener<org.json.JSONArray> listener,
+            Response.ErrorListener errorListener
+    ) {
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                listener,
+                errorListener
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
+                String authorization = "Bearer " + authToken; //According the documentation, Bearer is needed
+                Log.d("authorization", authorization);
+                headers.put("X-Authorization", authorization);
+                return headers;
+            }
+        };
+        queue.add(request); // Sends the request
     }
 
     // Private methods
@@ -132,5 +179,18 @@ public class Client {
             VolleyError error = new VolleyError("Unable to parse body into json");
             errorListener.onErrorResponse(error);
         }
+    }
+
+    private void getActuatorsValues(
+            String ID,
+            Response.Listener<org.json.JSONArray> successListener,
+            Response.ErrorListener errorListener
+    ){
+        String url = baseUrl
+                + "/plugins/telemetry/DEVICE/"
+                + ID
+                + "/values/attributes/CLIENT_SCOPE";
+        Log.d("URL", url);
+        getArray(url, successListener, errorListener);
     }
 }

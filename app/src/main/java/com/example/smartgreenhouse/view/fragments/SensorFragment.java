@@ -56,7 +56,6 @@ public class SensorFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(SensorFragmentViewModel.class);
         sensorsAdapter = new SensorsAdapter(getActivity(), new ArrayList<>(), sensorsIcons);
         viewModel.getValues().observe(getActivity(), newList -> onValuesChanged(newList));
-        viewModel.getAlarms();
         return inflater.inflate(R.layout.fragment_sensor, container, false);
     }
 
@@ -76,13 +75,11 @@ public class SensorFragment extends Fragment {
     }
 
     private void onValuesChanged(ArrayList<SensorItem> newList) {
-        viewModel.getAlarmsStatus();
         sensorsAdapter.items = newList;
         sensorsAdapter.notifyDataSetChanged();
     }
 
     private void onRefreshButtonClicked() {
-        viewModel.getAlarmsStatus(); //this method is called before sensors values are received to compare the alarms with each sensor
         viewModel.refreshValues();
     }
 

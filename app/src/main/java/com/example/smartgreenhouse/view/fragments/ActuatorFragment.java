@@ -24,6 +24,7 @@ import com.example.smartgreenhouse.viewmodel.ActuatorFragmentViewModel;
 import com.example.smartgreenhouse.viewmodel.SensorFragmentViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,11 +37,14 @@ public class ActuatorFragment extends Fragment {
     private ImageButton refreshStatusButton;
     private RecyclerView actuatorsRecyclerView;
     private ActuatorsAdapter actuatorsAdapter;
-    int[] actuatorIcons = {R.drawable.lamp, R.drawable.irrigation, R.drawable.airconditioner};
+    HashMap<String, Integer> actuatorIcons = new HashMap<>();
+  //  int[] actuatorIcons = {R.drawable.lamp, R.drawable.irrigation, R.drawable.airconditioner};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        actuatorIcons.put("SMART LIGHT SYSTEM", R.drawable.lamp);
+        actuatorIcons.put("SMART IRRIGATION SYSTEM", R.drawable.irrigation);
     }
 
     @Override
