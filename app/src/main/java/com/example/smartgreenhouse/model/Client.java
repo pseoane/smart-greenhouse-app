@@ -134,6 +134,19 @@ public class Client {
         queue.add(request); // Sends the request
     }
 
+    public void getMeanValues(
+            Response.Listener<org.json.JSONObject> successListener,
+            Response.ErrorListener errorListener
+    ) {
+        String url = baseUrl
+                + "/plugins/telemetry/DEVICE/"
+                + DEVICE_ID
+                + "/values/timeseries";
+        Log.d("URL", url);
+        get(url, successListener, errorListener);
+
+    }
+
     // Private methods
     private void get(
             String url,

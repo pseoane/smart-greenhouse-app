@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ public class StatisticsFragment extends Fragment {
         refreshStatisticsButton = view.findViewById(R.id.refreshStatisticButton);
         refreshStatisticsButton.setOnClickListener(clickedView -> onRefreshButtonClicked());
         StatisticsRecyclerView = getView().findViewById(R.id.statisticsRecylerView);
-        StatisticsRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        StatisticsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         StatisticsRecyclerView = view.findViewById(R.id.statisticsRecylerView);
         StatisticsRecyclerView.setAdapter(statisticsAdapter);
     }

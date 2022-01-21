@@ -32,9 +32,6 @@ public class StatisticFragmentViewModel extends AndroidViewModel {
 
     public StatisticFragmentViewModel(@NonNull Application application) {
         super(application);
-        for (Triple meanValue : meanValues) {
-            keys.add(meanValue.getFirst());
-        }
         refreshValues();
     }
 
@@ -47,18 +44,17 @@ public class StatisticFragmentViewModel extends AndroidViewModel {
 
     public void refreshValues(){
         ArrayList<StatisticItem> statistics = new ArrayList<>();
-        Client.getSharedInstance().getSensorsValues(
-                keys,
+        Client.getSharedInstance().getMeanValues(
                 response -> {
                     try {
                         for (Triple triple : meanValues) {
-                            //JSONArray parameter = response.getJSONArray(triple.getFirst());
-                            for (int i = 0; i< response.length(); i++) {
-
-                                //JSONObject jsonObject = parameter.getJSONObject(i);
-                                // triple.getThird() are the units (%, ºC, etc)
-                                //String value = jsonObject.getString(triple.getFirst()) + triple.getThird();
-                                String value = response.get(triple.getFirst()) + triple.getThird();
+                            JSONArray parameter = response.getJSONArray(triple.getFirst());
+                            for (int i = 0; i< parameter.length(); i++) {
+                                JSONObject jsonObject = parameter.getJSONObject(i);
+                                String rawValue = jsonObject.getString("value");
+                                Double dValue = Double.valueOf(rawValue);
+                                dValue = Math.round(dValue*100.0)/100.0;
+                                String value = String.valueOf(dValue) + triple.getThird();
                                 statistics.add(new StatisticItem(triple.getSecond(), value));
                             }
                         }
