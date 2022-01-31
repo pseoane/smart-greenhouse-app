@@ -1,0 +1,411 @@
+{
+  "ruleChain": {
+    "additionalInfo": {
+      "description": ""
+    },
+    "name": "IrrigationManager",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": false,
+    "configuration": null
+  },
+  "metadata": {
+    "firstNodeIndex": 12,
+    "nodes": [
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 888,
+          "layoutY": 23
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save previous status",
+        "debugMode": true,
+        "configuration": {
+          "scope": "CLIENT_SCOPE",
+          "notifyDevice": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 365,
+          "layoutY": 192
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Prepare command to soilm",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "soilM = msg.currentValueSM;\nmsg.method=\"switchOnIrrigation\";\nmsg.params={};\nif (soilM < 75) {\n    msg.params.statusIrrigation=true;\n} else {\n    msg.params.statusIrrigation=false;\n}\nreturn {msg: msg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 750,
+          "layoutY": 229
+        },
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "PublishMessage",
+        "debugMode": true,
+        "configuration": {
+          "timeoutInSeconds": 60
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "Save sum of the cost of working time in the last 7 days.",
+          "layoutX": 1589,
+          "layoutY": 409
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save irrCost",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 64,
+          "layoutY": 88
+        },
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "Test",
+        "debugMode": true,
+        "configuration": {
+          "msgCount": 1,
+          "periodInSeconds": 1,
+          "jsScript": "var msg = { temp: 42, humidity: 32, currentValueSM: 98 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "originatorId": "0344eb30-75ed-11ec-9a04-591db17ccd5b",
+          "originatorType": "DEVICE"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 636,
+          "layoutY": 423
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "WriteAttribute",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "newMsg =  {};\nnewMsg.turnedOnDate = msg.turnedOnDate;\nnewMsg.timeDiff = msg.timeDiff;\nnewMsg.hola = msg.hola;\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 370,
+          "layoutY": 250
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Prepare message with previous status",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "soilM = msg.currentValueSM;\nmsg.method=\"switchOnIrrigation\";\npreviousStatus = metadata.cs_lastStatus;\nmsg.params={};\nif (soilM > 75) {\n    msg.params.statusIrrigation=false;\n} else if (soilM >= 70 && soilM <= 75) {\n    msg.params.statusIrrigation=previousStatus;\n} else if (soilM < 70) {\n   msg.params.statusIrrigation=true; \n}\nreturn {msg: msg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 748,
+          "layoutY": 108
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "WriteAttribute",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "newMsg =  {};\nnewMsg.lastStatus = msg.params.statusIrrigation;\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 871,
+          "layoutY": 342
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save working time",
+        "debugMode": true,
+        "configuration": {
+          "scope": "CLIENT_SCOPE",
+          "notifyDevice": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 396,
+          "layoutY": 505
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Calculate Diff",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "statusIrrigation = msg.params.statusIrrigation;\npreviousStatus = metadata.cs_lastStatus;\nnewMsg = {};\n\nif (previousStatus == \"false\" && statusIrrigation){\n    turnedOnDate = new Date();\n    newMsg.turnedOnDate = turnedOnDate;\n} else if (previousStatus==\"true\" && !statusIrrigation) {\n    turnedOnDate = metadata.cs_turnedOnDate;\n    if (turnedOnDate != null) {\n        var date_on = new Date();\n        date_on.setTime(Date.parse(turnedOnDate));\n        turnedOffDate = new Date();\n        metadata.cs_turnedOnDate = null;\n        timeDiff = turnedOffDate.getTime() - date_on.getTime();\n        newMsg.timeDiff = timeDiff;\n    }\n}\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1533,
+          "layoutY": 576
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "SumValues",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "var newMsg = {};\nif ( metadata.timeDiff !== undefined){\n    sumarray = JSON.parse(metadata.timeDiff);\n    value = sumarray[0].value;\n    for ( i = 1; i < sumarray.length; i++)\n        value += sumarray[i].value;\n    value = (value/(1000*3600))*0.25;\n    newMsg.irrCost= value;\n}\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 96,
+          "layoutY": 252
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Check previous irrigation status",
+        "debugMode": true,
+        "configuration": {
+          "tellFailureIfAbsent": true,
+          "clientAttributeNames": [
+            "lastStatus"
+          ],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 373,
+          "layoutY": 83
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbChangeOriginatorNode",
+        "name": "Change to IrrigationActuator",
+        "debugMode": true,
+        "configuration": {
+          "originatorSource": "RELATED",
+          "relationsQuery": {
+            "fetchLastLevelOnly": false,
+            "direction": "FROM",
+            "maxLevel": 1,
+            "filters": [
+              {
+                "relationType": "ControlsIrrigation",
+                "entityTypes": [
+                  "DEVICE"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "Get values last 7 days",
+          "layoutX": 1263,
+          "layoutY": 574
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetTelemetryNode",
+        "name": "Get values last 7 days",
+        "debugMode": true,
+        "configuration": {
+          "latestTsKeyNames": [
+            "timeDiff"
+          ],
+          "fetchMode": "ALL",
+          "orderBy": "ASC",
+          "limit": 1000,
+          "useMetadataIntervalPatterns": false,
+          "startInterval": 7,
+          "startIntervalTimeUnit": "DAYS",
+          "endInterval": 1,
+          "endIntervalTimeUnit": "MILLISECONDS",
+          "startIntervalPattern": "",
+          "endIntervalPattern": ""
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 960,
+          "layoutY": 579
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save TimeDiff",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 660,
+          "layoutY": 580
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Save TimeDiff",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "newMsg =  {};\nnewMsg.timeDiff = msg.timeDiff;\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 196,
+          "layoutY": 408
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "check timeDiff",
+        "debugMode": true,
+        "configuration": {
+          "tellFailureIfAbsent": false,
+          "clientAttributeNames": [
+            "timeDiff"
+          ],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 419,
+          "layoutY": 409
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Check turn on date",
+        "debugMode": true,
+        "configuration": {
+          "tellFailureIfAbsent": false,
+          "clientAttributeNames": [
+            "turnedOnDate"
+          ],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 1,
+        "toIndex": 7,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 2,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 17,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 16,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 8,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 2,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 7,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 17,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 16,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 0,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 5,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 9,
+        "toIndex": 15,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 10,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 11,
+        "toIndex": 1,
+        "type": "Failure"
+      },
+      {
+        "fromIndex": 11,
+        "toIndex": 6,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 12,
+        "toIndex": 11,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 13,
+        "toIndex": 10,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 14,
+        "toIndex": 13,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 15,
+        "toIndex": 14,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 16,
+        "toIndex": 9,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 17,
+        "toIndex": 9,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}

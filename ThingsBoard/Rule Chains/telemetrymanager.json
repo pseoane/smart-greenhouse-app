@@ -1,0 +1,268 @@
+{
+  "ruleChain": {
+    "additionalInfo": {
+      "description": ""
+    },
+    "name": "TelemetryManager",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": true,
+    "configuration": null
+  },
+  "metadata": {
+    "firstNodeIndex": 5,
+    "nodes": [
+      {
+        "additionalInfo": {
+          "description": "Save average values for the plant",
+          "layoutX": 1069,
+          "layoutY": 221
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save average values",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 780,
+          "layoutY": 223
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "CalculateAverageTemperature",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "var newMsg = {};\nif ( metadata.currentValueTemp !== undefined){\n    tempArray = JSON.parse(metadata.currentValueTemp);\n    value = tempArray[0].value;\n    for ( i = 1; i < tempArray.length; i++)\n        value += tempArray[i].value;\n    newMsg.avgTemp= value / tempArray.length;\n}\nif ( metadata.currentValueHum !== undefined){\n    humArray = JSON.parse(metadata.currentValueHum)\n    value = humArray[0].value;\n    for ( i = 1; i < humArray.length; i++)\n        value += humArray[i].value;\n    newMsg.avgHum= value / humArray.length;\n}\n\nif ( metadata.currentValueL !== undefined){\n    lightArray = JSON.parse(metadata.currentValueL)\n    value = lightArray[0].value;\n    for ( i = 1; i < lightArray.length; i++)\n        value += lightArray[i].value;\n    newMsg.avgLight= value / lightArray.length;\n}\nif ( metadata.currentValuepH !== undefined){\n    pHArray = JSON.parse(metadata.currentValuepH)\n    value = pHArray[0].value;\n    for ( i = 1; i < pHArray.length; i++)\n        value += pHArray[i].value;\n    newMsg.avgpH= value / pHArray.length;\n}\nif ( metadata.currentValueSM !== undefined){\n    smArray = JSON.parse(metadata.currentValueSM)\n    value = smArray[0].value;\n    for ( i = 1; i < smArray.length; i++)\n        value += smArray[i].value;\n    newMsg.avgSm = value / smArray.length;\n}\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "Get values in the last 7 days",
+          "layoutX": 551,
+          "layoutY": 99
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetTelemetryNode",
+        "name": "Get previous temperature values",
+        "debugMode": true,
+        "configuration": {
+          "latestTsKeyNames": [
+            "currentValueTemp",
+            "currentValueSM",
+            "currentValueL",
+            "currentValueHum",
+            "currentValuepH"
+          ],
+          "fetchMode": "ALL",
+          "orderBy": "ASC",
+          "limit": 1000,
+          "useMetadataIntervalPatterns": false,
+          "startInterval": 7,
+          "startIntervalTimeUnit": "DAYS",
+          "endInterval": 1,
+          "endIntervalTimeUnit": "MILLISECONDS",
+          "startIntervalPattern": "",
+          "endIntervalPattern": ""
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 74,
+          "layoutY": 65
+        },
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "Test",
+        "debugMode": true,
+        "configuration": {
+          "msgCount": 1,
+          "periodInSeconds": 1,
+          "jsScript": "var msg = { currentValueTemp: 42, currentValueHum: 77, currentValueL:75, currentValueSM: 0, currentValuepH: 5.5 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType};",
+          "originatorId": "a7a63f10-75ea-11ec-9a04-591db17ccd5b",
+          "originatorType": "DEVICE"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 29,
+          "layoutY": 308
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbChangeOriginatorNode",
+        "name": "Change to generic telemetry sensors",
+        "debugMode": true,
+        "configuration": {
+          "originatorSource": "RELATED",
+          "relationsQuery": {
+            "fetchLastLevelOnly": false,
+            "direction": "FROM",
+            "maxLevel": 1,
+            "filters": [
+              {
+                "relationType": "Converges",
+                "entityTypes": [
+                  "DEVICE"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 307,
+          "layoutY": 152
+        },
+        "type": "org.thingsboard.rule.engine.filter.TbMsgTypeSwitchNode",
+        "name": "CheckIfTelemetry",
+        "debugMode": true,
+        "configuration": {
+          "version": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 46,
+          "layoutY": 464
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save Data",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 1,
+        "toIndex": 0,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 1,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 6,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 4,
+        "type": "Post telemetry"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 2,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": [
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "912522c0-6bb7-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 423,
+          "layoutY": 311,
+          "ruleChainNodeId": "rule-chain-node-9"
+        },
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "93029880-6bbb-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 356,
+          "layoutY": 386,
+          "ruleChainNodeId": "rule-chain-node-10"
+        },
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "32efcc90-6bbd-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 362,
+          "layoutY": 543,
+          "ruleChainNodeId": "rule-chain-node-11"
+        },
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "5ad8e3f0-6bbc-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 361,
+          "layoutY": 468,
+          "ruleChainNodeId": "rule-chain-node-12"
+        },
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "d65701a0-6bbd-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 364,
+          "layoutY": 607,
+          "ruleChainNodeId": "rule-chain-node-13"
+        },
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "6ba22b30-7556-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 389,
+          "layoutY": 765,
+          "ruleChainNodeId": "rule-chain-node-14"
+        },
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "targetRuleChainId": {
+          "entityType": "RULE_CHAIN",
+          "id": "ca8f0870-6d77-11ec-9a04-591db17ccd5b"
+        },
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 373,
+          "layoutY": 683,
+          "ruleChainNodeId": "rule-chain-node-15"
+        },
+        "type": "Success"
+      }
+    ]
+  }
+}

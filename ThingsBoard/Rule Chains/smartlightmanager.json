@@ -1,0 +1,348 @@
+{
+  "ruleChain": {
+    "additionalInfo": {
+      "description": ""
+    },
+    "name": "SmartLightManager",
+    "firstRuleNodeId": null,
+    "root": false,
+    "debugMode": true,
+    "configuration": null
+  },
+  "metadata": {
+    "firstNodeIndex": 13,
+    "nodes": [
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1169,
+          "layoutY": 336
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "WriteAttribute",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "newMsg =  {};\nnewMsg.turnedOnDate = msg.turnedOnDate;\nnewMsg.timeDiff = msg.timeDiff;\nnewMsg.hola = msg.hola;\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1068,
+          "layoutY": 460
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save TimeDiff",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 788,
+          "layoutY": 460
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Save TimeDiff",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "newMsg =  {};\nnewMsg.timeDiff = msg.timeDiff;\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "Save sum of the cost of working time in the last 7 days.",
+          "layoutX": 1722,
+          "layoutY": 354
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgTimeseriesNode",
+        "name": "Save lightCost",
+        "debugMode": true,
+        "configuration": {
+          "defaultTTL": 0
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1593,
+          "layoutY": 460
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "SumValues",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "var newMsg = {};\nif ( metadata.timeDiff !== undefined){\n    sumarray = JSON.parse(metadata.timeDiff);\n    value = sumarray[0].value;\n    for ( i = 1; i < sumarray.length; i++)\n        value += sumarray[i].value;\n    value = (value/(1000*3600))*0.25;\n    newMsg.lightCost= value;\n}\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "Get values last 7 days",
+          "layoutX": 1323,
+          "layoutY": 458
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetTelemetryNode",
+        "name": "Get values last 7 days",
+        "debugMode": true,
+        "configuration": {
+          "latestTsKeyNames": [
+            "timeDiff"
+          ],
+          "fetchMode": "ALL",
+          "orderBy": "ASC",
+          "limit": 1000,
+          "useMetadataIntervalPatterns": false,
+          "startInterval": 7,
+          "startIntervalTimeUnit": "DAYS",
+          "endInterval": 1,
+          "endIntervalTimeUnit": "MILLISECONDS",
+          "startIntervalPattern": "",
+          "endIntervalPattern": ""
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 877,
+          "layoutY": 345
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Script Time Light On",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "statusLight = msg.params.statusLight;\nnewMsg = {};\n\nif (statusLight){\n    turnedOnDate = new Date();\n    newMsg.turnedOnDate = turnedOnDate;\n} else {\n    turnedOnDate = metadata.cs_turnedOnDate;\n    if (turnedOnDate != null) {\n        var date_on = new Date();\n        date_on.setTime(Date.parse(turnedOnDate));\n        turnedOffDate = new Date();\n        metadata.cs_turnedOnDate = null;\n        timeDiff = turnedOffDate.getTime() - date_on.getTime();\n        newMsg.timeDiff = timeDiff;\n    }\n}\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 700,
+          "layoutY": 211
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "check timeDiff",
+        "debugMode": true,
+        "configuration": {
+          "tellFailureIfAbsent": false,
+          "clientAttributeNames": [
+            "timeDiff"
+          ],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 924,
+          "layoutY": 228
+        },
+        "type": "org.thingsboard.rule.engine.metadata.TbGetAttributesNode",
+        "name": "Check turn on date",
+        "debugMode": true,
+        "configuration": {
+          "tellFailureIfAbsent": false,
+          "clientAttributeNames": [
+            "turnedOnDate"
+          ],
+          "sharedAttributeNames": [],
+          "serverAttributeNames": [],
+          "latestTsKeyNames": [],
+          "getLatestValueWithTs": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 1453,
+          "layoutY": 336
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save working time",
+        "debugMode": true,
+        "configuration": {
+          "scope": "CLIENT_SCOPE",
+          "notifyDevice": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 869,
+          "layoutY": 146
+        },
+        "type": "org.thingsboard.rule.engine.telemetry.TbMsgAttributesNode",
+        "name": "Save Light Status",
+        "debugMode": true,
+        "configuration": {
+          "scope": "CLIENT_SCOPE",
+          "notifyDevice": false
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 604,
+          "layoutY": 148
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "WriteAttribute",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "newMsg =  {};\nnewMsg.lastStatus = msg.params.statusLight;\nmsgType = \"POST_ATTRIBUTES_REQUEST\";\nreturn {msg: newMsg, metadata: metadata, msgType: msgType};\n"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 57,
+          "layoutY": 63
+        },
+        "type": "org.thingsboard.rule.engine.debug.TbMsgGeneratorNode",
+        "name": "Test",
+        "debugMode": true,
+        "configuration": {
+          "msgCount": 1,
+          "periodInSeconds": 1,
+          "jsScript": "var msg = { temp: 42, humidity: 77, currentValueL:85 };\nvar metadata = { data: 40 };\nvar msgType = \"POST_TELEMETRY_REQUEST\";\n\nreturn { msg: msg, metadata: metadata, msgType: msgType };",
+          "originatorId": "0344eb30-75ed-11ec-9a04-591db17ccd5b",
+          "originatorType": "DEVICE"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 93,
+          "layoutY": 255
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbChangeOriginatorNode",
+        "name": "Change to LightActuator",
+        "debugMode": true,
+        "configuration": {
+          "originatorSource": "RELATED",
+          "relationsQuery": {
+            "fetchLastLevelOnly": false,
+            "direction": "FROM",
+            "maxLevel": 1,
+            "filters": [
+              {
+                "relationType": "ControlsLight",
+                "entityTypes": [
+                  "DEVICE"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 372,
+          "layoutY": 257
+        },
+        "type": "org.thingsboard.rule.engine.transform.TbTransformMsgNode",
+        "name": "Prepare command to light",
+        "debugMode": true,
+        "configuration": {
+          "jsScript": "function isBetweenHours(startHour, endHour){\n    var now = new Date().getHours();\n    return now >= parseInt(startHour, 10) && now <= parseInt(endHour, 10);\n}\n\nlight = msg.currentValueL;\nmsg.method=\"switchOnLight\";\nmsg.params={};\n//light hours and there is no light\n//19:00 from 19:01 and 19:59\nif (light < 70 && isBetweenHours('08:00', '20:00')) {\n    msg.params.statusLight=true;\n} else {\n    msg.params.statusLight=false;\n}\n\nreturn {msg: msg, metadata: metadata, msgType: msgType};"
+        }
+      },
+      {
+        "additionalInfo": {
+          "description": "",
+          "layoutX": 627,
+          "layoutY": 348
+        },
+        "type": "org.thingsboard.rule.engine.rpc.TbSendRPCRequestNode",
+        "name": "PublishMessage",
+        "debugMode": true,
+        "configuration": {
+          "timeoutInSeconds": 60
+        }
+      }
+    ],
+    "connections": [
+      {
+        "fromIndex": 0,
+        "toIndex": 9,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 1,
+        "toIndex": 5,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 2,
+        "toIndex": 1,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 4,
+        "toIndex": 3,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 5,
+        "toIndex": 4,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 2,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 6,
+        "toIndex": 0,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 7,
+        "toIndex": 6,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 8,
+        "toIndex": 6,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 11,
+        "toIndex": 10,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 13,
+        "toIndex": 14,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 14,
+        "toIndex": 15,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 14,
+        "toIndex": 11,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 14,
+        "toIndex": 7,
+        "type": "Success"
+      },
+      {
+        "fromIndex": 14,
+        "toIndex": 8,
+        "type": "Success"
+      }
+    ],
+    "ruleChainConnections": null
+  }
+}
