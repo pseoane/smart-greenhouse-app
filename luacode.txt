@@ -1,0 +1,48 @@
+topic = "v1/devices/me/telemetry"
+connectorId = "636f6e383238"
+
+function parsePayload(appeui,deveui,payload)
+  Tag1 = "Light"
+  Tag2 = "Soil"
+  
+  --Decode the payload (Hexadecimal string) into a Byte array
+  value = resiot_hexdecode(payload)
+
+  --Convert the input Bytes into each type (float/int) and split values
+  light = resiot_ba2intLE16(resiot_baslice(value,0,2))
+  soil = resiot_ba2intLE16(resiot_baslice(value,2,4))
+  message = '{"currentValueL":"'..light..'","currentValueSM":"'..soil..'"}'
+  err = resiot_dc_push(connectorId, topic, message) --this works for amazon aws / mqtt pushers, fails for http pushers as no topic is required
+  if err ~= "" then 
+      resiot_debug(err)
+  end
+  
+  --Set node values
+  worked, err = resiot_setnodevalue(appeui, deveui, Tag1, light)
+  worked, err = resiot_setnodevalue(appeui, deveui, Tag2, soil)
+  if (not worked) then
+    resiot_debug(string.format("Set Value Error %s \n",err))
+  else
+    resiot_debug("Set Node value successfull\n")
+  end
+end
+
+Origin = resiot_startfrom() --Scene process starts here
+
+--Manual script execution for testing
+if Origin == "Manual" then
+  payload = "48004700" --Set your test payload here in hexadecimal
+  appeui = "70b3d57ed000fcda" --Set your Application EUI here
+  deveui = "7E39323559379194" --Set your own Device EUI here
+  parsePayload(appeui,deveui,payload)
+  resiot_debug(string.format("Tag: %s Value: %s \n",Tag1, light))
+  resiot_debug(string.format("Tag: %s Value: %s \n",Tag2, soil))
+
+
+  -- Normal execution, get payload received from device
+else
+  appeui = resiot_comm_getparam("appeui")
+  deveui = resiot_comm_getparam("deveui")
+  payload, err = resiot_getlastpayload(appeui, deveui)
+  parsePayload(appeui,deveui,payload)
+end
