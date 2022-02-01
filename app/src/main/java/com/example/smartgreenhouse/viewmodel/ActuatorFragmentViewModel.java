@@ -41,12 +41,16 @@ public class ActuatorFragmentViewModel extends AndroidViewModel {
                         ArrayList<ActuatorItem> actuatorItems = new ArrayList<>();
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject actuator = response.getJSONObject(i);
-                            actuatorItems.add(
-                                    new ActuatorItem(
-                                          "Smart Irrigation System",
-                                            actuator.getBoolean("value")
-                                    )
-                            );
+                            String value = actuator.get("value").toString();
+                            if (isBoolean(value)) {
+                                actuatorItems.add(
+                                        new ActuatorItem(
+                                                "Smart Irrigation System",
+                                                actuator.getBoolean("value")
+                                        )
+                                );
+                                break;
+                            }
                             refreshLight(actuatorItems);
                         }
                     } catch (Exception e){
@@ -59,18 +63,26 @@ public class ActuatorFragmentViewModel extends AndroidViewModel {
         );
     }
 
+    private boolean isBoolean(String str) {
+        return str.equals("true") || str.equals("false");
+    }
+
     private void refreshLight(ArrayList<ActuatorItem> previousActuatorValues) {
         Client.getSharedInstance().getLightStatus(
                 response -> {
                     try {
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject actuator = response.getJSONObject(i);
-                            previousActuatorValues.add(
-                                    new ActuatorItem(
-                                            "Smart Light System",
-                                            actuator.getBoolean("value")
-                                    )
-                            );
+                            String value = actuator.get("value").toString();
+                            if (isBoolean(value)) {
+                                previousActuatorValues.add(
+                                        new ActuatorItem(
+                                                "Smart Light System",
+                                                actuator.getBoolean("value")
+                                        )
+                                );
+                                break;
+                            }
                         }
                         getValues().postValue(previousActuatorValues);
                     } catch (Exception e){
